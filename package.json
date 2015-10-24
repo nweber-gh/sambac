@@ -1,0 +1,30 @@
+{
+  "name": "jasminum",
+  "version": "0.0.0",
+  "description": "Run your jasmine specs in the browser",
+  "preferGlobal": true,
+  "bin": {
+    "jasminum": "index.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@stash.grubhub.com:7999/spike/jasminum.git"
+  },
+  "keywords": [
+    "jasmine"
+  ],
+  "author": "Isaiah Simpson <isimpson@grubhub.com>",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "express": "^4.13.3",
+    "glob": "^5.0.15",
+    "jade": "^1.11.0",
+    "jasmine-core": "^2.3.4",
+    "lodash": "^3.10.1",
+    "minimist": "^1.2.0",
+    "serve-index": "^1.7.2"
+  }
+}

@@ -1,0 +1,15 @@
+doctype html
+html(lang="en")
+    head
+        title All Specs for #{projectName} | Jasminum
+        link(rel='stylesheet', type='text/css', href='/jasmine/lib/jasmine-core/jasmine.css')
+    body
+        script(src='/jasmine/lib/jasmine-core/jasmine.js')
+        script(src='/jasmine/lib/jasmine-core/jasmine-html.js')
+        script(src='/jasmine/lib/jasmine-core/boot.js')
+
+        script(src=systemJs)
+        script System.config({baseURL: '/static'});
+        script(src=configJs)
+        script(src='/jasminum/jasminum.js')
+        script jasminum.start(#{specs});
