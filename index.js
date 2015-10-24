@@ -16,7 +16,6 @@ program
     .version('0.0.0')
     .usage('[options] <file ...>')
     .option('-p, --port <portNumber>', 'serve spec runners on the specified local port number', parseInt, 5678)
-    .option('-r, --run [specName]', 'run the specified spec headless')
     .parse(process.argv);
 
 let projectDir = path.resolve(process.cwd(), program.args && program.args.length > 0 ? program.args[0] : ''),
@@ -25,11 +24,6 @@ let projectDir = path.resolve(process.cwd(), program.args && program.args.length
     jasmineDir = `${__dirname}/node_modules/jasmine-core`,
     jasminumDir = `${__dirname}/web`;
 
-//
-//function headless() {
-//
-//}
-//
 function start(systemJs, configJs) {
     let app = express();
 
