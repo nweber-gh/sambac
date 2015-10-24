@@ -4,25 +4,36 @@
 /* globals jasminum */
 
 window.jasminum = {
-    start(specFile) {
-        System.import(specFile)
-            .then(() => {
-                window.onload();
-                jasminum.decorate();
-            });
+    start() {
+        if(arguments.length > 0) {
+            let promises = [];
+
+            for(let i = 0; i < arguments.length; i++) {
+                promises.push(System.import(arguments[i]));
+            }
+
+            Promise
+                .all(promises)
+                .then(() => {
+                    window.onload();
+                    jasminum.decorate(true);
+                });
+        }
     },
-    //decorate() {
-    //    let jasmineBanner = document.querySelector('.banner'),
-    //        allSpecsButton = document.createElement('a');
-    //
-    //    allSpecsButton.href = '/';
-    //    allSpecsButton.className = 'run-options';
-    //    allSpecsButton.innerHTML = '<span class="trigger">All Specs</span>';
-    //    jasmineBanner.appendChild(allSpecsButton);
-    //},
-    decorate() {
+    decorate(loaded) {
         document.querySelector('a').href = '/';
         document.querySelector('a').target = '';
+
+        if(!loaded) {
+            let bar = document.querySelector('.bar');
+            bar.textContent = 'Loading and tanspiling...';
+
+            jasminum.loadingInterval = setInterval(() => {
+                bar.textContent += '.';
+            }, 20);
+        } else {
+            clearInterval(jasminum.loadingInterval);
+        }
     }
 };
 

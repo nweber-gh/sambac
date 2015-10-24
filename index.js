@@ -66,11 +66,7 @@ function start(systemJs, configJs) {
                 projectName,
                 systemJs,
                 configJs,
-                specs: _.map(files, file => ({
-                    name: path.basename(file, '.js'),
-                    path: file,
-                    url: `/specs/${path.basename(file, '.js')}`
-                }))
+                specsJs: _.map(files, file => `/static/${file}`).join('\', \'')
             });
         });
     });
