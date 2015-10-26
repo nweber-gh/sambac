@@ -11,6 +11,7 @@
   },
   "repository": {
     "type": "git",
+    "url": "https://github.com/acaides/sambac.git"
   },
   "keywords": [
     "jasmine"
