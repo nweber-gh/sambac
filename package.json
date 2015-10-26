@@ -17,7 +17,7 @@
     "jasmine"
   ],
   "author": "Isaiah Simpson <isimpson@grubhub.com>",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "dependencies": {
     "commander": "^2.9.0",
     "express": "^4.13.3",
