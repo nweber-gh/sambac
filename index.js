@@ -22,7 +22,7 @@ let projectDir = path.resolve(process.cwd(), program.args && program.args.length
     go = {cwd: projectDir},
     projectName = projectDir.split(path.sep).pop(),
     jasmineDir = `${__dirname}/node_modules/jasmine-core`,
-    jasminumDir = `${__dirname}/web`;
+    sambacDir = `${__dirname}/web`;
 
 function start(systemJs, configJs) {
     let app = express();
@@ -33,8 +33,8 @@ function start(systemJs, configJs) {
     app.use('/project', express.static(projectDir));
     app.use('/jasmine', serveIndex(jasmineDir, {icons: true}));
     app.use('/jasmine', express.static(jasmineDir));
-    app.use('/jasminum', serveIndex(jasminumDir, {icons: true}));
-    app.use('/jasminum', express.static(jasminumDir));
+    app.use('/sambac', serveIndex(sambacDir, {icons: true}));
+    app.use('/sambac', express.static(sambacDir));
 
     app.get('/', (req, res) => {
         glob('!(node_modules|jspm_packages)/**/*-spec.js', go, (err, files) => {
@@ -86,13 +86,13 @@ glob(`jspm_packages/system.js`, go, (error, files) => {
     let systemJs, configJs;
 
     if (error || !files || files.length === 0) {
-        console.error('Cannot start Jasminum - Unable to locate system.js for JSPM.');
+        console.error('Cannot start sambac - Unable to locate system.js for JSPM.');
     } else {
         systemJs = `/project/${files[0]}`;
 
         glob(`config.js`, go, (error, files) => {
             if (error || !files || files.length === 0) {
-                console.error('Cannot start Jasminum - SystemJS config.js file not found.');
+                console.error('Cannot start sambac - SystemJS config.js file not found.');
             } else {
                 configJs = `/project/${files[0]}`;
                 start(systemJs, configJs);

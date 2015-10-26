@@ -1,17 +1,16 @@
 {
-  "name": "jasminum",
+  "name": "sambac",
   "version": "0.0.0",
   "description": "Run your jasmine specs in the browser",
   "preferGlobal": true,
   "bin": {
-    "jasminum": "index.js"
+    "sambac": "index.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "ssh://git@stash.grubhub.com:7999/spike/jasminum.git"
   },
   "keywords": [
     "jasmine"

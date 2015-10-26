@@ -1,9 +1,9 @@
 'use strict';
 
 /* globals System */
-/* globals jasminum */
+/* globals sambac */
 
-window.jasminum = {
+window.sambac = {
     start() {
         if(arguments.length > 0) {
             let promises = [];
@@ -16,7 +16,7 @@ window.jasminum = {
                 .all(promises)
                 .then(() => {
                     window.onload();
-                    jasminum.decorate(true);
+                    sambac.decorate(true);
                 });
         }
     },
@@ -28,15 +28,15 @@ window.jasminum = {
             let bar = document.querySelector('.bar');
             bar.textContent = 'Loading and tanspiling...';
 
-            jasminum.loadingInterval = setInterval(() => {
+            sambac.loadingInterval = setInterval(() => {
                 bar.textContent += '.';
             }, 20);
         } else {
-            clearInterval(jasminum.loadingInterval);
+            clearInterval(sambac.loadingInterval);
         }
     }
 };
 
 window.addEventListener('load', () => {
-    jasminum.decorate();
+    sambac.decorate();
 });
