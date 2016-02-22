@@ -26,7 +26,7 @@ window.sambac = {
 
         if(!loaded) {
             let bar = document.querySelector('.bar');
-            bar.textContent = 'Loading and tanspiling...';
+            bar.textContent = 'Loading and transpiling...';
 
             sambac.loadingInterval = setInterval(() => {
                 bar.textContent += '.';

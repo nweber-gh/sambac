@@ -37,7 +37,7 @@ function start(systemJs, configJs) {
     app.use('/sambac', express.static(sambacDir));
 
     app.get('/', (req, res) => {
-        glob('!(node_modules|jspm_packages)/**/*-spec.js', go, (err, files) => {
+        glob('!(node_modules|jspm_packages)/**/*spec.js', go, (err, files) => {
             res.render('home', {
                 projectName,
                 specs: _.map(files, file => ({
