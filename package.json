@@ -1,6 +1,6 @@
 {
   "name": "sambac",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Run your jasmine specs in the browser",
   "preferGlobal": true,
   "bin": {
