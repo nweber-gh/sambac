@@ -4,6 +4,8 @@
 
 'use strict';
 
+const SPECS_GLOB = '!(node_modules|jspm_packages)/**/*spec.js';
+
 let _ = require('lodash'),
     glob = require('glob'),
     path = require('path'),
@@ -13,7 +15,6 @@ let _ = require('lodash'),
     serveIndex = require('serve-index');
 
 program
-    .version('0.0.0')
     .usage('[options] <file ...>')
     .option('-p, --port <portNumber>', 'serve spec runners on the specified local port number', parseInt, 5678)
     .parse(process.argv);
@@ -24,7 +25,21 @@ let projectDir = path.resolve(process.cwd(), program.args && program.args.length
     jasmineDir = `${process.cwd()}/node_modules/jasmine-core`,
     sambacDir = `${__dirname}/web`;
 
-console.log(jasmineDir);
+function getSpecs() {
+    return new Promise((res, rej) => {
+        glob(SPECS_GLOB, go, (err, files) => {
+            if (err) {
+                rej(err);
+            } else {
+                res(_.sortBy(_.map(_.filter(files, file => !_.includes(file, 'e2e')), file => ({
+                    name: path.basename(file, '.js'),
+                    path: file,
+                    url: `/specs/${path.basename(file, '.js')}`
+                })), 'name'));
+            }
+        });
+    });
+}
 
 function start(systemJs, configJs) {
     let app = express();
@@ -39,16 +54,16 @@ function start(systemJs, configJs) {
     app.use('/sambac', express.static(sambacDir));
 
     app.get('/', (req, res) => {
-        glob('!(node_modules|jspm_packages)/**/*spec.js', go, (err, files) => {
-            res.render('home', {
-                projectName,
-                specs: _.sortBy(_.map(files, file => ({
-                    name: path.basename(file, '.js'),
-                    path: file,
-                    url: `/specs/${path.basename(file, '.js')}`
-                })), 'name')
+        getSpecs()
+            .then(specs => {
+                res.render('home', {
+                    projectName,
+                    specs
+                });
+            })
+            .catch(error => {
+                res.status(500).render('500', {error});
             });
-        });
     });
 
     app.get('/specs/:specName', (req, res) => {
@@ -69,14 +84,18 @@ function start(systemJs, configJs) {
     });
 
     app.get('/specs', (req, res) => {
-        glob('!(node_modules|jspm_packages)/**/*-spec.js', go, (err, files) => {
-            res.render('specs', {
-                projectName,
-                systemJs,
-                configJs,
-                specsJs: _.map(files, file => `/project/${file}`).join('\', \'')
+        getSpecs()
+            .then(specs => {
+                res.render('specs', {
+                    projectName,
+                    systemJs,
+                    configJs,
+                    specsJs: _.map(specs, spec => `/project/${spec.path}`).join('\', \'')
+                });
+            })
+            .catch(error => {
+                res.status(500).render('500', {error});
             });
-        });
     });
 
     http
