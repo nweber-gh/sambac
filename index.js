@@ -21,8 +21,10 @@ program
 let projectDir = path.resolve(process.cwd(), program.args && program.args.length > 0 ? program.args[0] : ''),
     go = {cwd: projectDir},
     projectName = projectDir.split(path.sep).pop(),
-    jasmineDir = `${__dirname}/node_modules/jasmine-core`,
+    jasmineDir = `${process.cwd()}/node_modules/jasmine-core`,
     sambacDir = `${__dirname}/web`;
+
+console.log(jasmineDir);
 
 function start(systemJs, configJs) {
     let app = express();
@@ -40,11 +42,11 @@ function start(systemJs, configJs) {
         glob('!(node_modules|jspm_packages)/**/*spec.js', go, (err, files) => {
             res.render('home', {
                 projectName,
-                specs: _.map(files, file => ({
+                specs: _.sortBy(_.map(files, file => ({
                     name: path.basename(file, '.js'),
                     path: file,
                     url: `/specs/${path.basename(file, '.js')}`
-                }))
+                })), 'name')
             });
         });
     });

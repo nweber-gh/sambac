@@ -5,18 +5,17 @@ html(lang='en')
         link(rel='stylesheet', type='text/css', href='/jasmine/lib/jasmine-core/jasmine.css')
     body
         div(class='jasmine_html-reporter')
-            div(class='banner', style='height: 40px;')
-                a(class='title', href='/')
-                span(class='version') 2.3.4
-            div(class='alert')
-                span(class='duration') #{specs.length} specs
-                span(class='bar passed') <b>#{projectName}</b>
-            div(class='results')
-                div(class='summary')
-                    ul(class='suite')
-                        li(class='suite-detail')
+            div(class='jasmine-banner', style='height: 40px;')
+                a(class='jasmine-title', href='/')
+            div(class='jasmine-alert')
+                span(class='jasmine-duration') #{specs.length} specs
+                span(class='jasmine-bar jasmine-passed') <b>#{projectName}</b>
+            div(class='jasmine-results')
+                div(class='jasmine-summary' style="font-size: larger; line-height: normal;")
+                    ul(class='jasmine-suite')
+                        li(class='jasmine-suite-detail')
                             a(href='/specs') all specs
-                    ul(class='suite')
+                    ul(class='jasmine-suite')
                         each spec in specs
-                            li(class='suite-detail')
+                            li(class='jasmine-suite-detail')
                                 a(href=spec.url) #{spec.name}

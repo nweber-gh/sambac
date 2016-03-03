@@ -6,9 +6,6 @@
   "bin": {
     "sambac": "index.js"
   },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/acaides/sambac.git"
@@ -16,15 +13,15 @@
   "keywords": [
     "jasmine"
   ],
-  "author": "Isaiah Simpson <isimpson@grubhub.com>",
+  "author": "Isaiah Simpson <isaiah.simpson@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "commander": "^2.9.0",
     "express": "^4.13.3",
     "glob": "^5.0.15",
     "jade": "^1.11.0",
-    "jasmine-core": "^2.3.4",
-    "lodash": "^3.10.1",
+    "jasmine-core": "^2.4.1",
+    "lodash": "^4.6.1",
     "serve-index": "^1.7.2"
   }
 }

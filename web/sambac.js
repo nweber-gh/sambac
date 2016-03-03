@@ -25,7 +25,7 @@ window.sambac = {
         document.querySelector('a').target = '';
 
         if(!loaded) {
-            let bar = document.querySelector('.bar');
+            let bar = document.querySelector('.jasmine-bar');
             bar.textContent = 'Loading and transpiling...';
 
             sambac.loadingInterval = setInterval(() => {
