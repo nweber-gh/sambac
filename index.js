@@ -20,8 +20,8 @@ let _ = require('lodash'),
 program
     .usage('[options] <file ...>')
     .option('--webpackConfig <webpackConfig>', 'webpackConfigLocation')
-    .option('--port <portNumber>', 'serve spec list on the specified local port number', parseInt, 5678)
-    .option('--webpackPort <webpackPort>', 'local webpack dev server port ', parseInt, 8080)
+    .option('--port <portNumber>', 'serve spec list on the specified local port number', 5678)
+    .option('--webpackPort <webpackPort>', 'local webpack dev server port ', 8080)
     .parse(process.argv);
 
 if(!program.webpackConfig){
