@@ -14,6 +14,7 @@ let _ = require('lodash'),
     program = require('commander'),
     serveIndex = require('serve-index'),
     webpack = require('webpack'),
+    open = require('open'),
     webpackDevServer = require('webpack-dev-server');
 
 program
@@ -90,4 +91,7 @@ server.listen(program.webpackPort);
 
 http
     .createServer(app)
-    .listen(program.port, () => console.log(`HTTP server listening on port ${program.port}`));
+    .listen(program.port, () => {
+      console.log(`HTTP server listening on port ${program.port}`);
+      open(`http://localhost:${program.port}`);
+    });
