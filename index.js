@@ -16,14 +16,18 @@ let _ = require('lodash'),
 
 program
     .usage('[options] <file ...>')
-    .option('-p, --port <portNumber>', 'serve spec runners on the specified local port number', parseInt, 5678)
+    .option('-p, --port <portNumber>', 'serve spec list on the specified local port number', parseInt, 5678)
+    .option('-w, --webpackPort <webpackPort>', 'local webpack dev server port ', '8080')
+    .option('-t, --webpackTestPath <webpackTestPath>', 'path on webpack dev server that specs live under', 'test')
     .parse(process.argv);
 
 let projectDir = path.resolve(process.cwd(), program.args && program.args.length > 0 ? program.args[0] : ''),
     go = {cwd: projectDir},
     projectName = projectDir.split(path.sep).pop(),
     jasmineDir = `${process.cwd()}/node_modules/jasmine-core`,
-    sambacDir = `${__dirname}/web`;
+    webpackBaseUrl = `http://localhost:${program.webpackPort}/`,
+    webpackLiveReloadBaseUrl = `${webpackBaseUrl}webpack-dev-server/${program.webpackTestPath}/`,
+    webpackDebugBaseUrl = `${webpackBaseUrl}${program.webpackTestPath}/`;
 
 function getSpecs() {
     return new Promise((res, rej) => {
@@ -34,90 +38,34 @@ function getSpecs() {
                 res(_.sortBy(_.map(_.filter(files, file => !_.includes(file, 'e2e')), file => ({
                     name: path.basename(file, '.js'),
                     path: file,
-                    url: `/specs/${path.basename(file, '.js')}`
+                    url: `${webpackLiveReloadBaseUrl}${file.toString().slice(0, -2)}html`,
+                    debugUrl: `${webpackDebugBaseUrl}${file.toString().slice(0, -2)}html`
                 })), 'name'));
             }
         });
     });
 }
 
-function start(systemJs, configJs) {
-    let app = express();
+let app = express();
 
-    app.set('view engine', 'jade');
-    app.set('views', `${__dirname}/views`);
-    app.use('/project', serveIndex(projectDir, {icons: true}));
-    app.use('/project', express.static(projectDir));
-    app.use('/jasmine', serveIndex(jasmineDir, {icons: true}));
-    app.use('/jasmine', express.static(jasmineDir));
-    app.use('/sambac', serveIndex(sambacDir, {icons: true}));
-    app.use('/sambac', express.static(sambacDir));
+app.set('view engine', 'jade');
+app.set('views', `${__dirname}/views`);
+app.use('/jasmine', serveIndex(jasmineDir, {icons: true}));
+app.use('/jasmine', express.static(jasmineDir));
 
-    app.get('/', (req, res) => {
-        getSpecs()
-            .then(specs => {
-                res.render('home', {
-                    projectName,
-                    specs
-                });
-            })
-            .catch(error => {
-                res.status(500).render('500', {error});
+app.get('/', (req, res) => {
+    getSpecs()
+        .then(specs => {
+            res.render('home', {
+                projectName,
+                specs
             });
-    });
-
-    app.get('/specs/:specName', (req, res) => {
-        glob(`!(node_modules|jspm_packages)/**/${req.params.specName}.js`, go, (error, files) => {
-            if (error) {
-                res.status(500).render('500', {error});
-            } else if (files.length === 0) {
-                res.status(404).render('404', {error});
-            } else {
-                res.status(200).render('spec', {
-                    specName: req.params.specName,
-                    specJs: `/project/${files[0]}`,
-                    systemJs,
-                    configJs
-                });
-            }
+        })
+        .catch(error => {
+            res.status(500).render('500', {error});
         });
-    });
-
-    app.get('/specs', (req, res) => {
-        getSpecs()
-            .then(specs => {
-                res.render('specs', {
-                    projectName,
-                    systemJs,
-                    configJs,
-                    specsJs: _.map(specs, spec => `/project/${spec.path}`).join('\', \'')
-                });
-            })
-            .catch(error => {
-                res.status(500).render('500', {error});
-            });
-    });
-
-    http
-        .createServer(app)
-        .listen(program.port, () => console.log(`HTTP server listening on port ${program.port}`));
-}
-
-glob(`jspm_packages/system.js`, go, (error, files) => {
-    let systemJs, configJs;
-
-    if (error || !files || files.length === 0) {
-        console.error('Cannot start sambac - Unable to locate system.js for JSPM.');
-    } else {
-        systemJs = `/project/${files[0]}`;
-
-        glob(`config.js`, go, (error, files) => {
-            if (error || !files || files.length === 0) {
-                console.error('Cannot start sambac - SystemJS config.js file not found.');
-            } else {
-                configJs = `/project/${files[0]}`;
-                start(systemJs, configJs);
-            }
-        });
-    }
 });
+
+http
+    .createServer(app)
+    .listen(program.port, () => console.log(`HTTP server listening on port ${program.port}`));

@@ -13,9 +13,7 @@ html(lang='en')
             div(class='jasmine-results')
                 div(class='jasmine-summary' style="font-size: larger; line-height: normal;")
                     ul(class='jasmine-suite')
-                        li(class='jasmine-suite-detail')
-                            a(href='/specs') all specs
-                    ul(class='jasmine-suite')
                         each spec in specs
                             li(class='jasmine-suite-detail')
-                                a(href=spec.url) #{spec.name}
+                                a(href=spec.url, target='_blank') #{spec.name}
+                                a(href=spec.debugUrl, target='_blank', style='padding-left: 10px;') (debug)
