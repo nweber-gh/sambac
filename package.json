@@ -1,6 +1,6 @@
 {
   "name": "sambac-webpack",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "Run your jasmine specs in the browser",
   "preferGlobal": true,
   "bin": {
