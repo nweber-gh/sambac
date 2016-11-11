@@ -12,22 +12,34 @@ let _ = require('lodash'),
     express = require('express'),
     http = require('http'),
     program = require('commander'),
-    serveIndex = require('serve-index');
+    serveIndex = require('serve-index'),
+    webpack = require('webpack'),
+    webpackDevServer = require('webpack-dev-server');
 
 program
     .usage('[options] <file ...>')
-    .option('-p, --port <portNumber>', 'serve spec list on the specified local port number', parseInt, 5678)
-    .option('-w, --webpackPort <webpackPort>', 'local webpack dev server port ', '8080')
-    .option('-t, --webpackTestPath <webpackTestPath>', 'path on webpack dev server that specs live under', 'test')
+    .option('--webpackConfig <webpackConfig>', 'webpackConfigLocation')
+    .option('--port <portNumber>', 'serve spec list on the specified local port number', parseInt, 5678)
+    .option('--webpackPort <webpackPort>', 'local webpack dev server port ', parseInt, 8080)
     .parse(process.argv);
+
+if(!program.webpackConfig){
+  console.log('add a webpack config');
+  process.exit(1);
+}
+let webpackConfig = require(process.cwd() + '/' + program.webpackConfig);
+if(!webpackConfig){
+  console.log('missing webpack config');
+  process.exit(1);
+}
+
 
 let projectDir = path.resolve(process.cwd(), program.args && program.args.length > 0 ? program.args[0] : ''),
     go = {cwd: projectDir},
     projectName = projectDir.split(path.sep).pop(),
     jasmineDir = `${process.cwd()}/node_modules/jasmine-core`,
     webpackBaseUrl = `http://localhost:${program.webpackPort}/`,
-    webpackLiveReloadBaseUrl = `${webpackBaseUrl}webpack-dev-server/${program.webpackTestPath}/`,
-    webpackDebugBaseUrl = `${webpackBaseUrl}${program.webpackTestPath}/`;
+    webpackLiveReloadBaseUrl = `${webpackBaseUrl}webpack-dev-server/`;
 
 function getSpecs() {
     return new Promise((res, rej) => {
@@ -39,7 +51,7 @@ function getSpecs() {
                     name: path.basename(file, '.js'),
                     path: file,
                     url: `${webpackLiveReloadBaseUrl}${file.toString().slice(0, -2)}html`,
-                    debugUrl: `${webpackDebugBaseUrl}${file.toString().slice(0, -2)}html`
+                    debugUrl: `${webpackBaseUrl}${file.toString().slice(0, -2)}html`
                 })), 'name'));
             }
         });
@@ -65,6 +77,17 @@ app.get('/', (req, res) => {
             res.status(500).render('500', {error});
         });
 });
+
+let compiler = webpack(webpackConfig);
+let server = new webpackDevServer(compiler, {
+  hot: true,
+  stats: {
+    colors: true
+  },
+  inline: true,
+  progress: false
+});
+server.listen(program.webpackPort);
 
 http
     .createServer(app)
