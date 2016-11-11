@@ -80,7 +80,6 @@ app.get('/', (req, res) => {
 
 let compiler = webpack(webpackConfig);
 let server = new webpackDevServer(compiler, {
-  hot: true,
   stats: {
     colors: true
   },
