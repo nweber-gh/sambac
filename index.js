@@ -13,9 +13,8 @@ let _ = require('lodash'),
     http = require('http'),
     program = require('commander'),
     serveIndex = require('serve-index'),
-    webpack = require('webpack'),
     open = require('open'),
-    webpackDevServer = require('webpack-dev-server');
+    fork = require('child_process').fork;
 
 program
     .usage('[options] <file ...>')
@@ -48,12 +47,14 @@ function getSpecs() {
             if (err) {
                 rej(err);
             } else {
-                res(_.sortBy(_.map(_.filter(files, file => !_.includes(file, 'e2e')), file => ({
+                res(_.sortBy(_.map(_.filter(files, file => !_.includes(file, 'e2e')), file => {
+                  const url = `http://localhost:${program.port}/specs/${file.toString().slice(0, -3)}`;
+                  return {
                     name: path.basename(file, '.js'),
-                    path: file,
-                    url: `${webpackLiveReloadBaseUrl}${file.toString().slice(0, -2)}html`,
-                    debugUrl: `${webpackBaseUrl}${file.toString().slice(0, -2)}html`
-                })), 'name'));
+                    url,
+                    debugUrl: `${url}?debug=true`
+                  };
+                }), 'name'));
             }
         });
     });
@@ -79,19 +80,56 @@ app.get('/', (req, res) => {
         });
 });
 
-let compiler = webpack(webpackConfig);
-let server = new webpackDevServer(compiler, {
-  stats: {
-    colors: true
-  },
-  inline: true,
-  progress: false
-});
-server.listen(program.webpackPort);
+const availableEntries = webpackConfig.entry;
+const availableEntryKeys = Object.keys(availableEntries);
+webpackConfig.entry = {};
 
-http
-    .createServer(app)
-    .listen(program.port, () => {
-      console.log(`HTTP server listening on port ${program.port}`);
-      open(`http://localhost:${program.port}`);
+let child;
+
+process.on('exit', function(){
+  child.kill();
+});
+
+function restartFork(entryMap){
+  return new Promise((resolve) => {
+    child = fork(__dirname + '/webpack.js', [program.webpackConfig, JSON.stringify(webpackConfig.entry), program.webpackPort], {cwd: process.cwd()});
+    child.on('message', m => {
+      if(m === 'started'){
+        resolve();
+      }
     });
+  });
+}
+
+app.get('/specs/*?', (req, res, next) => {
+  function redirect(){
+    let newUrl;
+    if(!req.query.debug){
+      newUrl = `${webpackLiveReloadBaseUrl}${specPath}.html`;
+    }
+    else{
+      newUrl = `${webpackBaseUrl}${specPath}.html`
+    }
+    res.redirect(newUrl);
+  }
+
+  const specPath = req.params[0];
+  let entryName = availableEntryKeys.find(entry => entry.endsWith(specPath));
+  if(!webpackConfig.entry[entryName]){
+    webpackConfig.entry[entryName] = availableEntries[entryName];
+    child.kill();
+    restartFork().then(redirect);
+  }
+  else{
+    redirect();
+  }
+});
+
+restartFork().then(() => {
+  http
+      .createServer(app)
+      .listen(program.port, () => {
+        console.log(`HTTP server listening on port ${program.port}`);
+        open(`http://localhost:${program.port}`);
+      });
+});
