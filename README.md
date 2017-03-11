@@ -8,7 +8,7 @@ Run your Jasmine specs in the browser.
 ### Setup
 
 1. `yarn add sambac-webpack --dev` (or npm install)
-2. Add a normal webpack configuration to your project. This conifguration should contain whatever loaders/rules are needed to run your tests. The entry point should be a string or an array of strings with globs that match all of your spec files.
+2. Add a normal webpack configuration to your project. This conifguration should contain whatever loaders/rules/plugins are needed to run your tests. The entry point should be a string or an array of strings with globs that match all of your spec files, as relative paths from the root directory. [See an example](example/webpack.config.js).
 
 ### To Run
 Make a package.json script with `sambac --webpackConfig PATH_TO_CONFIG`

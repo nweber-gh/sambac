@@ -2,7 +2,8 @@ const webpack = require('webpack');
 const path = require('path');
 
 let config = {
-  entry: './**/example-spec.js',
+  //entry paths should be relative to root directory
+  entry: './example/src/**/example-spec.js',
   output: {
    path: '/',
    publicPath: '/',
