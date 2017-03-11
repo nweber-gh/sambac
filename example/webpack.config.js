@@ -1,9 +1,8 @@
 const webpack = require('webpack');
-const WebpackJasmineHtmlRunnerPlugin = require('webpack-jasmine-html-runner-plugin');
 const path = require('path');
 
 let config = {
-  entry: WebpackJasmineHtmlRunnerPlugin.entry('./**/example-spec.js'),
+  entry: './**/example-spec.js',
   output: {
    path: '/',
    publicPath: '/',
@@ -18,10 +17,6 @@ let config = {
       'process.env': {
         NODE_ENV: '"test"'
       },
-    }),
-    new WebpackJasmineHtmlRunnerPlugin( {
-      fixupScripts: ['fixup-stacktraces', 'fixup-json-messages'],
-      pattern: /spec$/
     })
   ]
 };
