@@ -32,7 +32,7 @@
     "webpack-jasmine-html-runner-plugin": "^0.7.0"
   },
   "peerDependencies": {
-    "webpack": "^1.13.3 || ^2.2.1"
+    "webpack": "^2.2.1"
   },
   "scripts": {
     "example": "node index.js --webpackConfig ./example/webpack.config.js --port 5678 --webpackPort 5679"
