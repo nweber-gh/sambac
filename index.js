@@ -14,13 +14,14 @@ let _ = require('lodash'),
     program = require('commander'),
     serveIndex = require('serve-index'),
     open = require('open'),
-    fork = require('child_process').fork;
+    fork = require('child_process').fork,
+    WebpackJasmineHtmlRunnerPlugin = require('webpack-jasmine-html-runner-plugin');
 
 program
     .usage('[options] <file ...>')
     .option('--webpackConfig <webpackConfig>', 'webpackConfigLocation')
     .option('--port <portNumber>', 'serve spec list on the specified local port number', 5678)
-    .option('--webpackPort <webpackPort>', 'local webpack dev server port ', 8080)
+    .option('--webpackPort <webpackPort>', 'local webpack dev server port ', 5679)
     .parse(process.argv);
 
 if(!program.webpackConfig){
@@ -80,7 +81,14 @@ app.get('/', (req, res) => {
         });
 });
 
-const availableEntries = webpackConfig.entry;
+const pattern = webpackConfig.entry;
+let availableEntries;
+if(Array.isArray(pattern)){
+  availableEntries = WebpackJasmineHtmlRunnerPlugin.entry(...webpackConfig.entry);
+}
+else{
+  availableEntries = WebpackJasmineHtmlRunnerPlugin.entry(webpackConfig.entry);
+}
 const availableEntryKeys = Object.keys(availableEntries);
 webpackConfig.entry = {};
 

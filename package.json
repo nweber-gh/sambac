@@ -24,12 +24,12 @@
     "lodash": "^4.6.1",
     "open": "0.0.5",
     "serve-index": "^1.7.2",
-    "webpack-dev-server": "^2.3.0"
+    "webpack-dev-server": "^2.3.0",
+    "webpack-jasmine-html-runner-plugin": "^0.7.0"
   },
   "devDependencies": {
     "jasmine": "^2.5.3",
-    "webpack": "^2.2.1",
-    "webpack-jasmine-html-runner-plugin": "^0.7.0"
+    "webpack": "^2.2.1"
   },
   "peerDependencies": {
     "webpack": "^2.2.1"
