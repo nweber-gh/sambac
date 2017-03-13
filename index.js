@@ -4,8 +4,6 @@
 
 'use strict';
 
-const SPECS_GLOB = '!(node_modules|jspm_packages)/**/*spec.js';
-
 let _ = require('lodash'),
     glob = require('glob'),
     path = require('path'),
@@ -42,23 +40,40 @@ let projectDir = path.resolve(process.cwd(), program.args && program.args.length
     webpackBaseUrl = `http://localhost:${program.webpackPort}/`,
     webpackLiveReloadBaseUrl = `${webpackBaseUrl}webpack-dev-server/`;
 
+let specGlobs = webpackConfig.entry;
+
 function getSpecs() {
-    return new Promise((res, rej) => {
-        glob(SPECS_GLOB, go, (err, files) => {
-            if (err) {
-                rej(err);
-            } else {
-                res(_.sortBy(_.map(_.filter(files, file => !_.includes(file, 'e2e')), file => {
-                  const url = `http://localhost:${program.port}/specs/${file.toString().slice(0, -3)}`;
-                  return {
-                    name: path.basename(file, '.js'),
-                    url,
-                    debugUrl: `${url}?debug=true`
-                  };
-                }), 'name'));
-            }
-        });
+  let promise;
+  if(Array.isArray(specGlobs)){
+    promise = Promise.all(specGlobs.map(getSpecsFromPattern)).then(arrs => {
+      return [].concat(...arrs);
+    })
+  }
+  else{
+    promise = getSpecsFromPattern(specGlobs);
+  }
+  return promise.then(arr => {
+    return _.sortBy(arr, 'name');
+  });
+}
+
+function getSpecsFromPattern(pattern){
+  return new Promise((res, rej) => {
+    glob(pattern, go, (err, files) => {
+        if (err) {
+            rej(err);
+        } else {
+            res(files.map(file => {
+              const url = `http://localhost:${program.port}/specs/${file.toString().slice(0, -3)}`;
+              return {
+                name: path.basename(file).replace(/\.[^/.]+$/, ""),
+                url,
+                debugUrl: `${url}?debug=true`
+              };
+            }));
+        }
     });
+  });
 }
 
 let app = express();
