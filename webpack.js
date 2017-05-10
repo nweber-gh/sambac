@@ -8,7 +8,8 @@ webpackConfig.plugins = webpackConfig.plugins || [];
 
 let options = webpackConfig.sambac || {};
 let pluginOptions = {
-  includePaths: options.includePaths || []
+  includePaths: options.includePaths || [],
+  fixupScripts: [ 'fixup-stacktraces']
 };
 if(options.pattern){
   pluginOptions.pattern = options.pattern;
