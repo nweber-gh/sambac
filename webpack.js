@@ -1,8 +1,9 @@
 let webpack = require('webpack'),
     webpackDevServer = require('webpack-dev-server'),
-    WebpackJasmineHtmlRunnerPlugin = require('webpack-jasmine-html-runner-plugin');
+    WebpackJasmineHtmlRunnerPlugin = require('webpack-jasmine-html-runner-plugin'),
+    path = require('path');
 
-let webpackConfig = require(process.cwd() + '/' + process.argv[2]);
+let webpackConfig = require(path.resolve(process.cwd(), process.argv[2]));
 webpackConfig.entry = JSON.parse(process.argv[3]);
 webpackConfig.plugins = webpackConfig.plugins || [];
 
