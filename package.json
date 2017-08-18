@@ -33,7 +33,7 @@
     "webpack": "^3.5.5"
   },
   "peerDependencies": {
-    "webpack": "^2.2.1"
+    "webpack": "^2.2.1 || ^3.0.0"
   },
   "scripts": {
     "example": "node bin/sambac.js --webpackConfig ./example/webpack.config.js --port 5678 --webpackPort 5679"
