@@ -9,22 +9,26 @@ let _ = require('lodash'),
     WebpackJasmineHtmlRunnerPlugin = require('webpack-jasmine-html-runner-plugin');
 
 module.exports = function(options){
+  let port = options.port || 5678;
+  let webpackPort = options.webpackPort || 5679;
+
   if(!options.webpackConfig){
     console.log('add a webpack config');
     process.exit(1);
   }
-  let webpackConfig = require(process.cwd() + '/' + options.webpackConfig);
+
+  let webpackConfig = require(path.resolve(process.cwd(), options.webpackConfig));
   if(!webpackConfig){
     console.log('missing webpack config');
     process.exit(1);
   }
 
 
-  let projectDir = path.resolve(process.cwd(), options.args && options.args.length > 0 ? options.args[0] : ''),
+  let projectDir = process.cwd(),
       go = {cwd: projectDir},
       projectName = projectDir.split(path.sep).pop(),
       jasmineDir = `${process.cwd()}/node_modules/jasmine-core`,
-      webpackBaseUrl = `http://localhost:${options.webpackPort}/`,
+      webpackBaseUrl = `http://localhost:${webpackPort}/`,
       webpackLiveReloadBaseUrl = `${webpackBaseUrl}webpack-dev-server/`;
 
   let specGlobs = webpackConfig.entry;
@@ -51,7 +55,7 @@ module.exports = function(options){
               rej(err);
           } else {
               res(files.map(file => {
-                const url = `http://localhost:${options.port}/specs/${file.toString().slice(0, -3)}`;
+                const url = `http://localhost:${port}/specs/${file.toString().slice(0, -3)}`;
                 return {
                   name: path.basename(file).replace(/\.[^/.]+$/, ""),
                   url,
@@ -102,7 +106,7 @@ module.exports = function(options){
 
   function restartFork(entryMap){
     return new Promise((resolve) => {
-      child = fork(__dirname + '/webpack.js', [options.webpackConfig, JSON.stringify(webpackConfig.entry), options.webpackPort], {cwd: process.cwd()});
+      child = fork(__dirname + '/webpack.js', [options.webpackConfig, JSON.stringify(webpackConfig.entry), webpackPort], {cwd: process.cwd()});
       child.on('message', m => {
         if(m === 'started'){
           resolve();
@@ -138,9 +142,9 @@ module.exports = function(options){
   restartFork().then(() => {
     http
         .createServer(app)
-        .listen(options.port, () => {
-          console.log(`HTTP server listening on port ${options.port}`);
-          open(`http://localhost:${options.port}`);
+        .listen(port, () => {
+          console.log(`HTTP server listening on port ${port}`);
+          open(`http://localhost:${port}`);
         });
   });
 }
