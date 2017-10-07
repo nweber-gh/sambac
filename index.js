@@ -115,6 +115,9 @@ module.exports = function(options){
     });
   }
 
+  const sambacOptions = webpackConfig.sambac || {};
+  const includePaths = sambacOptions.includePaths || [];
+
   app.get('/specs/*?', (req, res, next) => {
     function redirect(){
       let newUrl;
@@ -130,7 +133,7 @@ module.exports = function(options){
     const specPath = req.params[0];
     let entryName = availableEntryKeys.find(entry => entry.endsWith(specPath));
     if(!webpackConfig.entry[entryName]){
-      webpackConfig.entry[entryName] = availableEntries[entryName];
+      webpackConfig.entry[entryName] = includePaths.concat(availableEntries[entryName]);
       child.kill();
       restartFork().then(redirect);
     }
