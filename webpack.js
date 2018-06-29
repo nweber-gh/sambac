@@ -23,7 +23,8 @@ if(Object.keys(webpackConfig.entry).length > 0){
   let webpackServer = new webpackDevServer(compiler, {
     stats: {
       colors: true
-    }
+    },
+    contentBase: [process.cwd(), path.resolve(__dirname, '..', '..')]
   });
 
   webpackServer.listen(parseInt(process.argv[4]));

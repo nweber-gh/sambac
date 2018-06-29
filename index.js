@@ -27,7 +27,7 @@ module.exports = function(options){
   let projectDir = process.cwd(),
       go = {cwd: projectDir},
       projectName = projectDir.split(path.sep).pop(),
-      jasmineDir = `${process.cwd()}/node_modules/jasmine-core`,
+      jasmineDir = path.resolve(require.resolve('jasmine-core'), '..', '..'),
       webpackBaseUrl = `http://localhost:${webpackPort}/`,
       webpackLiveReloadBaseUrl = `${webpackBaseUrl}webpack-dev-server/`;
 
