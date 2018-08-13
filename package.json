@@ -20,16 +20,16 @@
     "commander": "^2.9.0",
     "express": "^4.13.3",
     "glob": "^7.0.0",
-    "jade": "^1.11.0",
-    "jasmine-core": "^2.4.1",
+    "jasmine-core": "^3.2.0",
     "lodash": "^4.6.1",
     "open": "0.0.5",
+    "pug": "^2.0.3",
     "serve-index": "^1.7.2",
     "webpack-dev-server": "^2.3.0",
     "webpack-jasmine-html-runner-plugin": "^0.8.0"
   },
   "devDependencies": {
-    "jasmine": "^2.5.3",
+    "jasmine": "^3.2.0",
     "webpack": "^3.5.5"
   },
   "peerDependencies": {

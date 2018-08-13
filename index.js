@@ -93,7 +93,7 @@ module.exports = function(options){
 
   let app = express();
 
-  app.set('view engine', 'jade');
+  app.set('view engine', 'pug');
   app.set('views', `${__dirname}/views`);
   app.use('/jasmine', serveIndex(jasmineDir, {icons: true}));
   app.use('/jasmine', express.static(jasmineDir));
