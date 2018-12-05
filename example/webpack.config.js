@@ -3,6 +3,7 @@ const path = require('path');
 
 let config = {
   //entry paths should be relative to root directory
+  mode: 'development',
   entry: './example/src/**/example-spec.js',
   output: {
    path: '/',
