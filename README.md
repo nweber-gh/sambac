@@ -2,7 +2,7 @@
 Run your Jasmine specs in the browser.
 
 ### Requirements
-- webpack 2
+- webpack 2-4
 - jasmine
 
 ### Setup
@@ -23,6 +23,10 @@ If you click the debug link, the loaded tab will not refresh automatically on fi
 
 `--webpackPort 1235` The port the webpack dev server runs on (default: 5679)
 
+`--showPath` set to show path instead of only filename for specs
+
+`--disableRandom` do not run specs in random order (the default since jasmine 3)
+
 #### Node API
 
 If you need to run sambac with the node API:
@@ -32,7 +36,9 @@ const sambac = require('sambac-webpack');
 sambac({
   webpackConfig: PATH
   port: port,
-  webpackPort: webpackPort
+  webpackPort: webpackPort,
+  showPath: false,
+  disableRandom: true
 });
 ```
 

@@ -11,6 +11,7 @@ let _ = require('lodash'),
 module.exports = function(options){
   let port = options.port || 5678;
   let webpackPort = options.webpackPort || 5679;
+  const {disableRandom} = options;
 
   if(!options.webpackConfig){
     console.log('add a webpack config');
@@ -149,7 +150,10 @@ module.exports = function(options){
         newUrl = `${webpackLiveReloadBaseUrl}${specPath}.html`;
       }
       else{
-        newUrl = `${webpackBaseUrl}${specPath}.html`
+        newUrl = `${webpackBaseUrl}${specPath}.html`;
+      }
+      if(disableRandom){
+        newUrl += '?random=false';
       }
       res.redirect(newUrl);
     }
